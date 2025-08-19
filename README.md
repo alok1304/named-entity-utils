@@ -46,7 +46,7 @@ python -m pytest -v tests/
 ```
 
 # Usages 
-After cloning this repository, you can mark extra phrases in any file or folder by running:
+After cloning this repository, you can remove named entity in any file or folder by running:
 ```
 py src/remove_named_entities.py /path/to/file-or-folder
 ```
@@ -54,4 +54,5 @@ py src/remove_named_entities.py /path/to/file-or-folder
 ```
 py named-entity-utils/src/remove_named_entities.py src/licensedcode/data/rules
 ```
+
 
