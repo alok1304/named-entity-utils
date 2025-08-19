@@ -1,9 +1,9 @@
 import sys
 import os
 import spacy
-from .ignore_entities import IGNORED_NAMED_ENTITY
-from .ignore_entities import COPYRIGHT_PHRASES
-from .legalese import common_license_words
+from ignore_entities import IGNORED_NAMED_ENTITY
+from ignore_entities import COPYRIGHT_PHRASES
+from legalese import common_license_words
 
 # Load English NLP model
 nlp = spacy.load("en_core_web_sm")
@@ -71,3 +71,4 @@ if __name__ == "__main__":
         print("Usage: python src/remove_named_entities.py /path/to/file-or-folder")
     else:
         run_tool(sys.argv[1])
+
