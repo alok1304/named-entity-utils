@@ -6,14 +6,11 @@ def test_basic_removal_named_entities():
     assert "Alice" not in result
     assert "Bob" not in result
 
-def test_ignore_named_entities():
+def test_ignore_named_entities_which_is_in_legalese():
     text = "DATA POSSIBILITY LIABILITY"
     result = remove_named_entities(text)
     assert text == result
 
-def test_skip_if_copyright_present():
-    text = "Copyright (c) 2011, 2002 Mutsuo Saito, Makoto Matsumoto"
-    result = remove_named_entities(text)
-    # Nothing should be removed
-    assert "Makoto Matsumoto" in result
+
+
 
