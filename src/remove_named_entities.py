@@ -2,7 +2,7 @@ import sys
 import os
 import spacy
 from ignore_entities import IGNORED_NAMED_ENTITY
-from ignore_entities import COPYRIGHT_PHRASES
+from ignore_entities import copyright_statement_markers
 from legalese import common_license_words
 
 # Load English NLP model
@@ -11,17 +11,10 @@ nlp = spacy.load("en_core_web_sm")
 def remove_named_entities(text):
     """
     Remove all named entities from the given text.
-    """
-    
-    lower_text = text.lower()
-    if any(phrase in lower_text for phrase in COPYRIGHT_PHRASES):
-        print("[SKIPPED] File contains copyright statement.")
-        return text 
+    """ 
+    # TODO: handle copyright statements
 
-
-    doc = nlp(text)
-    persons = [ent.text for ent in doc.ents if ent.label_ == "PERSON"]
-      
+    doc = nlp(text) 
     
     all_entities=[]
     for ent in doc.ents:
