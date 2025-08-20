@@ -9,7 +9,7 @@ This tool uses `spaCy` for Named Entity Recognition (NER) to detect entities lik
 ## Features
 - Remove PERSON, ORG, and GPE named entities from text.
 - Ignore named entities which are in legalese.py
-- Skip files containing copyright statements.
+- Skip files containing copyright statements.(TODO)
 
 ---
 
@@ -54,5 +54,6 @@ py src/remove_named_entities.py /path/to/file-or-folder
 ```
 py named-entity-utils/src/remove_named_entities.py src/licensedcode/data/rules
 ```
+
 
 
