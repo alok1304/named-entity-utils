@@ -1,7 +1,6 @@
 # named-entity-utils
 
 A Python utility for removing named entity from text file.
-
 This tool uses `spaCy` for Named Entity Recognition (NER) to detect entities like PERSON, ORG, and GPE.
 
 ---
@@ -12,7 +11,7 @@ This tool uses `spaCy` for Named Entity Recognition (NER) to detect entities lik
 - Skip files containing copyright statements.(TODO)
 
 ---
-
+           
 # Installation
 
 Clone the repository and set up a virtual environment:
