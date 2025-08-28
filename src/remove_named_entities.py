@@ -1,22 +1,17 @@
-import sys
 import os
+from pathlib import Path
 import spacy
+from licensedcode.frontmatter import load_frontmatter, dumps_frontmatter
 from ignore_entities import IGNORED_NAMED_ENTITY
-from cluecode.copyrights import copyright_statement_markers
 from licensedcode.legalese import common_license_words
-  
 
-# Load English NLP model
+# Load spaCy model
 nlp = spacy.load("en_core_web_sm")
 
 def remove_named_entities(text):
-    """
-    Remove all named entities from the given text.
-    """ 
-    # TODO: handle copyright statements
+    """Remove PERSON, ORG, GPE entities from text unless kept or in LEGAL_TERMS."""
+    doc = nlp(text)
 
-    doc = nlp(text) 
-    
     all_entities=[]
     for ent in doc.ents:
         if ((ent.label_ == "PERSON" or ent.label_ == "ORG" or ent.label_== "GPE") and ent.text not in IGNORED_NAMED_ENTITY
@@ -24,7 +19,7 @@ def remove_named_entities(text):
             all_entities.append((ent.text,ent.label_))
 
     print(all_entities)    
-    
+
     new_text = text
     # Remove PERSON entities starting from the end to avoid messing up offsets
     for ent in sorted(doc.ents, key=lambda x: x.start_char, reverse=True):
@@ -35,34 +30,36 @@ def remove_named_entities(text):
     return new_text
 
 
-def process_file(file_path):
-    """Process a single file and remove PERSON entities."""
-    with open(file_path, "r", encoding="utf-8") as f:
-        content = f.read()
+def process_file(filepath, output=None, license_expression=None):
+    """Process a single file while preserving metadata."""
+    content, metadata = load_frontmatter(filepath)
+    
+    license_exp = metadata.get("license_expression")
 
-    updated_content = remove_named_entities(content)
+    if license_expression and license_exp == license_expression:
+        content = remove_named_entities(content)
 
-    if updated_content != content:
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(updated_content)
-        print(f"[TOOL] Cleaned PERSON entities in: {file_path}")
+    # Recombine metadata + cleaned content
+    new_text = dumps_frontmatter(content.lstrip("\n"), metadata)
 
-def run_tool(target_path):
-    """Process a file or all files in a folder recursively."""
-    if os.path.isfile(target_path):
-        process_file(target_path)
-    elif os.path.isdir(target_path):
-        for root, _, files in os.walk(target_path):
-            for filename in files:
-                file_path = os.path.join(root, filename)
-                if os.path.isfile(file_path):
-                    process_file(file_path)
-    else:
-        print("[TOOL] Path does not exist!")
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python src/remove_named_entities.py /path/to/file-or-folder")
-    else:
-        run_tool(sys.argv[1])
 
+    # Write result back
+    out_path = Path(output) if output else filepath
+    os.makedirs(out_path.parent, exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(new_text)
+
+
+def process_path(path, output=None, license_expression=None):
+    """Process file or directory."""
+    path = Path(path)
+    if path.is_file():
+        out_path = Path(output) if output else path
+        process_file(path, output=out_path, license_expression=license_expression)
+    elif path.is_dir():
+        for root, _, files in os.walk(path):
+            for file in files:
+                fpath = Path(root) / file
+                out_path = Path(output) / fpath.relative_to(path) if output else fpath
+                process_file(fpath, output=out_path, license_expression=license_expression)
