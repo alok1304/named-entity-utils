@@ -2,8 +2,9 @@ import sys
 import os
 import spacy
 from ignore_entities import IGNORED_NAMED_ENTITY
-from ignore_entities import copyright_statement_markers
-from legalese import common_license_words
+from cluecode.copyrights import copyright_statement_markers
+from licensedcode.legalese import common_license_words
+  
 
 # Load English NLP model
 nlp = spacy.load("en_core_web_sm")
