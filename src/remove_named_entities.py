@@ -31,24 +31,30 @@ def remove_named_entities(text):
 
 
 def process_file(filepath, output=None, license_expression=None):
-    """Process a single file while preserving metadata."""
+    """Process a single file while preserving metadata and trailing newlines."""
     content, metadata = load_frontmatter(filepath)
+
+
+    core_content = content.rstrip()
+
+    trailing_whitespace = content[len(core_content):]
+
+    processed_content = core_content
     
     license_exp = metadata.get("license_expression")
 
     if license_expression and license_exp == license_expression:
-        content = remove_named_entities(content)
-
-    # Recombine metadata + cleaned content
-    new_text = dumps_frontmatter(content.lstrip("\n"), metadata)
+        processed_content = remove_named_entities(core_content)
 
 
+    recombined_text = dumps_frontmatter(processed_content.lstrip("\n"), metadata)
 
-    # Write result back
+    final_text_to_write = recombined_text + trailing_whitespace
+
     out_path = Path(output) if output else filepath
     os.makedirs(out_path.parent, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
-        f.write(new_text)
+        f.write(final_text_to_write)
 
 
 def process_path(path, output=None, license_expression=None):
