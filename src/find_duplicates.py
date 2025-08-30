@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 from collections import defaultdict
 from licensedcode.tokenize import index_tokenizer_with_stopwords
+from licensedcode.frontmatter import load_frontmatter
 
 
 def hash_tokens(t):
@@ -34,9 +35,13 @@ def find_similar_rules(paths, out_path):
 
     for f in r_files:
         try:
-            c = f.read_text('utf-8')
-            t = index_tokenizer_with_stopwords(c)
-            if not t:
+            # c = f.read_text('utf-8')
+            c,m = load_frontmatter(f)
+            license_exp=m.get("license_expression")
+            if not license_exp or m.get("is_deprecated"):
+                license_exp=""  
+            t = index_tokenizer_with_stopwords(license_exp+c)
+            if not t or m.get("is_deprecated"):
                 continue
             t_hash = hash_tokens(t)
             hashes[t_hash].append(str(f.resolve()))
