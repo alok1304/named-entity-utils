@@ -16,9 +16,9 @@ def main():
         help="Preview changes without modifying files"
     )
     parser.add_argument(
-        "-l","--license-expression",
+        "-l", "--license-expression",
         help="Only process files with this license expression",
-        default=None
+        required=True   
     )
 
     args = parser.parse_args()

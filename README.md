@@ -7,8 +7,11 @@ This tool uses `spaCy` for Named Entity Recognition (NER) to detect entities lik
 
 ## Features
 - Remove PERSON, ORG, and GPE named entities from text.
-- Ignore named entities which are in legalese.py
-- Skip files containing copyright statements.(TODO)
+- Ignore named entities which are in legalese.py.
+- Ignore some name entities which is not an actual named entity.
+- Also Igone name entities if they inside required-phrases.
+- We can also get the duplicates rules files in json form.
+- This is used add `extra-phrase` in rules.
 
 ---
            
@@ -47,11 +50,17 @@ python -m pytest -v tests/
 # Usages 
 After cloning this repository, you can remove named entity in any file or folder by running:
 ```
-py src/remove_named_entities.py /path/to/file-or-folder
+py -m cli /path/to/file-or-folder -l (license-expression)
 ```
-# Example
+eg:
 ```
-py named-entity-utils/src/remove_named_entities.py src/licensedcode/data/rules
+py -m cli src/licensedcode/data/rules/ -l bsd-new
+```
+Also this `--license-expression` or `l` is required
+
+## Get Duplicate Rules in json form
+```
+py -m find_duplicates src/licensedcode/data/rules/ -o results.json
 ```
 
 
