@@ -38,15 +38,12 @@ def process_file(filepath, output=None, license_expression=None):
     content, metadata = load_frontmatter(filepath)
     core_content = content.rstrip()
     trailing_whitespace = content[len(core_content):]
-    rules_by_expression = get_rules_by_expression(str(filepath))
-    print(rules_by_expression)
-    for expr, rules in rules_by_expression.items():
-        print(expr,rules)
 
     license_exp = metadata.get("license_expression")
+    have_copyrights = metadata.get("ignorable_copyrights")
 
-    if license_expression and license_exp != license_expression:
-        #if license expression doesn't match then return
+    if (license_expression and license_exp != license_expression) or  have_copyrights:
+        #if license expression doesn't match and have copyright then return
         return  
 
     processed_content = core_content
@@ -65,6 +62,8 @@ def process_file(filepath, output=None, license_expression=None):
 def process_path(path, output=None, license_expression=None):
     """Process file or directory."""
     path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"Path does not exist: {path}")
     if path.is_file():
         out_path = Path(output) if output else path
         process_file(path, output=out_path, license_expression=license_expression)

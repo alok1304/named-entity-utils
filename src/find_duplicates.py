@@ -35,13 +35,12 @@ def find_similar_rules(paths, out_path):
 
     for f in r_files:
         try:
-            # c = f.read_text('utf-8')
-            c,m = load_frontmatter(f)
-            license_exp=m.get("license_expression")
-            if not license_exp or m.get("is_deprecated"):
+            content,metadata = load_frontmatter(f)
+            license_exp=metadata.get("license_expression")
+            if not license_exp or metadata.get("is_deprecated"):
                 license_exp=""  
-            t = index_tokenizer_with_stopwords(license_exp+c)
-            if not t or m.get("is_deprecated"):
+            t = index_tokenizer_with_stopwords(license_exp+content)
+            if not t or metadata.get("is_deprecated"):
                 continue
             t_hash = hash_tokens(t)
             hashes[t_hash].append(str(f.resolve()))
@@ -71,7 +70,7 @@ def find_similar_rules(paths, out_path):
         print("Scan complete. Reporting similar rules...")
         print("-" * 40)
         for group in sim_groups:
-            print("✨ Found a set of functionally equivalent rules:")
+            print("Found a set of functionally equivalent rules:")
             for fname in group:
                 print(f"  - {fname}")
             print()

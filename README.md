@@ -12,6 +12,7 @@ This tool uses `spaCy` for Named Entity Recognition (NER) to detect entities lik
 - Also Igone name entities if they inside required-phrases.
 - We can also get the duplicates rules files in json form.
 - This is used add `extra-phrase` in rules.
+- Also We do not remove named entity from rules if they have copyrights statements.
 
 ---
            
