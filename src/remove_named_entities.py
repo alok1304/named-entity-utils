@@ -64,6 +64,8 @@ def process_path(path, output=None, license_expression=None):
     path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"Path does not exist: {path}")
+    
+    print("Processing rules to remove named entities...")
     if path.is_file():
         out_path = Path(output) if output else path
         process_file(path, output=out_path, license_expression=license_expression)

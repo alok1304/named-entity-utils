@@ -64,5 +64,11 @@ Also this `--license-expression` or `l` is required
 py -m find_duplicates src/licensedcode/data/rules/ -o results.json
 ```
 
+### For Converting CRLF to LF for Windows
+Run this in terminal:
+```
+Get-ChildItem -Path "src/licensedcode/data/rules/*.RULE" | ForEach-Object { $rawContent = Get-Content -Path $_.FullName -Raw; $rawContent -replace "\r`n", "`n" | Set-Content -NoNewline -Path $_.FullName }
+```
+This convert rules CRLF to LF because removing named-entity from rules that changes LF to CRLF.
 
 
